@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Avoidance of duplication of beneficiaries - Upload Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Cinzel" rel="stylesheet">
+    <script>
+        $(function() {
+            $(document).on('change', ':file', function() {
+                var input = $(this),
+                numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                input.trigger('fileselect', [numFiles, label]);
+            });
+
+            $(document).ready( function() {
+                $(':file').on('fileselect', function(event, numFiles, label) {
+                    var input = $(this).parents('.choose-file').find(':text'),
+                    log = numFiles > 1 ? numFiles + ' files selected' : label;
+                    if( input.length ) {
+                        input.val(log);
+                    } else {
+                        if( log ) alert(log);
+                    }
+                });
+            });
+  
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/upload.css') }}">
+</head>
+<body class="container-fluid">
+    <div class="page-header row head">
+        <h1><b>Government of Gujarat </b>- Avoidance of duplication of beneficiaries</h1>
+     </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <img src="/static/img/GujaratEmblem.png">
+        </div>
+        <div class="col-sm-3">
+            <form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data" class="form-signin">
+                <h1 class="h3 mb-3 font-weight-normal">Scan the QR Code</h1>
+                <br>
+                <div class="choose-file">
+                    <label class="btn btn-block btn-primary choose ">
+                        Choose File
+                        <input id="file-picker" type="file" name="file" accept="XML/*" multiple style="display: none;">
+                    </label>
+                    <input type="text" class="form-control" readonly placeholder="Name of file" readonly required>
+                    <div class="form-control" id="msg">...</div>
+                </div>  
+                <br>
+                <input type="submit" value="Upload!" id="upload-button" class="btn btn-primary btn-block btn-lg"> 
+            </form>
+        </div>
+        <div class="col-sm-4">
+            <img src="/static/img/GujaratMap.png">
+        </div>
+    </div>
+</body>
+
+<script>
+    $("#file-picker").change(function(){
+        var input = document.getElementById('file-picker');
+        for (var i=0; i<input.files.length; i++)
+        {
+        //koala.jpg, koala.JPG substring(index) lastIndexOf('a') koala.1.jpg
+            var ext= input.files[i].name.substring(input.files[i].name.lastIndexOf('.')+1).toLowerCase()
+            if (ext == 'xml')
+            {
+                $("#msg").text("Files are supported")
+            }
+            else
+            {
+                $("#msg").text("Files are NOT supported")
+                document.getElementById("file-picker").value ="";
+            }
+        }
+    } );
+</script>
+</html>
